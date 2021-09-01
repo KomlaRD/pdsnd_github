@@ -1,0 +1,317 @@
+---
+title: "Bikeshare data analysis"
+author: "Eric Anku"
+date: "9/01/2021"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: united
+  highlight: textmate
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load libraries
+
+pacman::p_load(tidyverse, # data management and visualisation
+               rio, # importing data
+               skimr, # explore data
+               here, # working directory
+               janitor, # clean data
+               lubridate # work with date or date-time class data
+             )
+```
+
+
+## Load datasets
+
+```{r import-data}
+# Import New York dataset 
+
+ny <- import (here("data","new-york-city.csv"))
+
+# Clean colnames of New York dataset
+
+ny <- clean_names(ny)
+
+# Import Washington dataset
+
+wash <- import (here("data","washington.csv"))
+
+# Clean colnames of Washington dataset
+
+wash<- clean_names(wash)
+
+# Import Chicago dataset
+
+chi <- import (here("data","chicago.csv"))
+
+# Clean colnames of Chicago dataset
+
+chi<- clean_names(chi)
+
+```
+
+
+
+## Glimpse datasets
+
+The Bikeshare dataset looks at bikesharing usage patterns accross three cities: New York, Washington and Chicago.
+
+**New York Dataset**
+
+The dataset consists of 300,000 users with nine variables from New York.
+
+
+
+```{r glimpse-ny}
+# Glimpse New York City data
+
+glimpse (ny)
+```
+
+
+**Washington Dataset**
+
+There were 300,000 users in Washington with seven variables. The dataset did not have information on gender and birth year of users.
+
+
+
+```{r glimpse-wash}
+# Glimpse Washington data
+
+glimpse (wash)
+```
+
+
+
+**Chicago**
+
+
+The Chicago dataset consists of 300,000 users with nine variables as shown below
+
+
+```{r glimpse-chi}
+# Glimpse Chicago data
+
+glimpse (chi)
+```
+
+
+
+## Skim dataset
+
+**New York**
+
+All data variables were complete except for the birth year variable with a complete rate of about 91%. There were 643 unique start stations and 646 unique end stations. There were three unique user types. Also, there were three unique gender responses. The average trip duration was 900 seconds. The average birth year was 1978. The minimum start time was on 1st January, 2017 at 12:13 am with the maximum start time on 30th June, 2017 at 11:52 pm. 
+
+
+```{r}
+skim (ny) # Skim New York dataset
+```
+
+
+**Washington**
+
+All data variables were complete. There were 479 unique start stations and 479 unique end stations. There were two unique user types. The average trip duration was 1237 seconds. The minimum start time was on 1st January, 2017 at 12:11 am with the maximum start time on 30th June, 2017 at 12:59 pm. The minimum end time was on 1st January, 2017 at 12:14 am with the maximum end time on 2nd July, 2017 at 4:31 am. 
+
+
+
+```{r}
+skim (wash) # Skim Washington dataset
+```
+
+
+
+
+**Chicago**
+
+
+All data variables were complete except for the birth year variable with a complete rate of about 80%. There were 568 unique start stations and 572 unique end stations. There were three unique user types. Also, there were three unique gender responses. The average trip duration was 936 seconds. The average birth year was 1981. The minimum start time was on 1st January, 2017 at 12:07 am with the maximum start time on 30th June, 2017 at 11:59 pm. The minimum end time was on 1st January, 2017 at 12:20 am with the maximum end time on 1st July, 2017 at 12:25 am. 
+
+
+
+
+```{r}
+skim (chi)  # Skim Chicago dataset
+```
+
+
+
+
+## Question 1
+
+Which gender type has used the bikes longest in New York and Chicago?
+
+**New York**
+
+
+```{r}
+by (ny$trip_duration, ny$gender, max) # Maximum trip duration by gender
+```
+
+
+
+```{r ny-duration}
+ggplot (ny, aes (gender, trip_duration, fill = gender)) +
+        geom_bar(stat = "identity") + 
+        labs (title = "Males use bikes for the longest duration in New York", 
+              x = "Gender",
+              y= "Trip duration (seconds)"
+             ) + 
+        guides (fill = "none") # Plot of data
+
+```
+
+
+In New York City, males use bikes for longest duration followed by females and unclassified gender types.
+
+
+
+
+**Chicago**
+
+```{r}
+by (chi$trip_duration, chi$gender, max) # Maximum trip duration by gender
+```
+
+
+
+```{r}
+ggplot (chi, aes (gender, trip_duration, fill = gender)) +
+        geom_bar(stat = "identity") + 
+        labs (title = "Males use bikes for the longest duration in Chicago", 
+              x = "Gender",
+              y= "Trip duration (seconds)"
+             ) + 
+        guides (fill = "none") 
+```
+
+
+In Chicago, males used bikes the longest followed by other gender types not specified and then females. This is in contrast with the observation made in New York. The other gender types used bikes longer in Chicago than in New York. All in all, males used bikes the longest irrespective of the city.
+
+
+## Question 2
+
+In which city were bikes used longest?
+
+
+**New York**
+
+
+
+```{r}
+ny %>%
+        summarise (max (trip_duration)) # Maximum trip duration in New York
+```
+
+
+**Chicago**
+
+
+
+```{r}
+chi %>%
+        summarise (max (trip_duration)) # Maximum trip duration in Chicago
+
+```
+
+
+**Washington**
+
+
+
+```{r}
+wash %>%
+        summarise (max (trip_duration)) # Maximum trip duration in Washington
+```
+
+
+**Solution**
+
+The longest trip duration was recorded in New York at 2,155,775 seconds followed by Washington 1,235,662 seconds and the lowest recorded in Chicago at 86,224 seconds.
+
+
+
+## Question 3
+
+
+
+Which user types used bikes longest in New York, Washington or Chicago?
+
+
+**New York**
+
+Subscribers of bike systems used bikes longest compared to customers and other user types not specified.
+
+
+
+```{r user-types-ny}
+by (ny$trip_duration, ny$user_type, max) # Maximum trip duration by user types
+```
+
+
+```{r user-types-plot}
+ggplot (ny, aes (user_type, trip_duration, fill = user_type)) +
+        geom_bar(stat = "identity") + 
+        labs (title = "Males use bikes for the longest duration in New York", 
+              x = "User types",
+              y= "Trip duration (seconds)"
+             ) + 
+        guides (fill = "none") # Plot of data in New York
+```
+
+
+
+**Chicago**
+
+
+In Chicago, the usage of bikes by user types was similar to New York. However, there was a dependent user type with the lowest trip duration. Subscribers had the longest trip duration.
+
+
+
+```{r user-type-chi}
+by (chi$trip_duration, chi$user_type, max) # Maximum trip duration by user types
+```
+
+
+
+```{r user-type-chi-plot}
+ggplot (chi, aes (user_type, trip_duration, fill = user_type)) +
+        geom_bar(stat = "identity") + 
+        labs (title = "Males use bikes for the longest duration in Chicago", 
+              x = "User types",
+              y= "Trip duration (seconds)"
+             ) + 
+        guides (fill = "none") # Plot of data in Chicago
+```
+
+
+
+**Washington**
+
+
+In Washington, customers used bikes longest than subscribers unlike the situation in New York and in Chicago.
+
+
+```{r}
+by (wash$trip_duration, wash$user_type, max) # Maximum trip duration by user types
+```
+
+
+
+
+```{r}
+ggplot (wash, aes (user_type, trip_duration, fill = user_type)) +
+        geom_bar(stat = "identity") + 
+        labs (title = "Males use bikes for the longest duration in New York", 
+              x = "User types",
+              y= "Trip duration (seconds)"
+             ) + 
+        guides (fill = "none") # Plot of data in Washington
+```
+
