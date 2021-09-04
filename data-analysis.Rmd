@@ -163,7 +163,7 @@ ggplot (ny, aes (gender, trip_duration, fill = gender)) +
               x = "Gender",
               y= "Trip duration (seconds)"
              ) +
-        guides (fill = "none") # Plot of data
+        guides (fill = "none") # Plot of trip duration by gender in New York
 
 ```
 
@@ -188,7 +188,7 @@ ggplot (chi, aes (gender, trip_duration, fill = gender)) +
               x = "Gender",
               y= "Trip duration (seconds)"
              ) +
-        guides (fill = "none")
+        guides (fill = "none") # Plot of trip duration by gender in Chicago
 ```
 
 
@@ -262,7 +262,7 @@ ggplot (ny, aes (user_type, trip_duration, fill = user_type)) +
               x = "User types",
               y= "Trip duration (seconds)"
              ) +
-        guides (fill = "none") # Plot of data in New York
+        guides (fill = "none") # Plot of duration by user type in New York
 ```
 
 
@@ -287,7 +287,7 @@ ggplot (chi, aes (user_type, trip_duration, fill = user_type)) +
               x = "User types",
               y= "Trip duration (seconds)"
              ) +
-        guides (fill = "none") # Plot of data in Chicago
+        guides (fill = "none") # Plot of trip duration by user type in Chicago
 ```
 
 
@@ -305,12 +305,12 @@ by (wash$trip_duration, wash$user_type, max) # Maximum trip duration by user typ
 
 
 
-```{r user-type-wash-plot} 
+```{r user-type-wash-plot}
 ggplot (wash, aes (user_type, trip_duration, fill = user_type)) +
         geom_bar(stat = "identity") +
         labs (title = "Males use bikes for the longest duration in New York",
               x = "User types",
               y= "Trip duration (seconds)"
              ) +
-        guides (fill = "none") # Plot of data in Washington
+        guides (fill = "none") # Plot of trip duration by user type in Washington
 ```
