@@ -14,7 +14,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r load-libraries}
 # Load libraries
 
 pacman::p_load(tidyverse, # data management and visualisation
@@ -30,7 +30,7 @@ pacman::p_load(tidyverse, # data management and visualisation
 ## Load datasets
 
 ```{r import-data}
-# Import New York dataset 
+# Import New York dataset
 
 ny <- import (here("data","new-york-city.csv"))
 
@@ -107,21 +107,21 @@ glimpse (chi)
 
 **New York**
 
-All data variables were complete except for the birth year variable with a complete rate of about 91%. There were 643 unique start stations and 646 unique end stations. There were three unique user types. Also, there were three unique gender responses. The average trip duration was 900 seconds. The average birth year was 1978. The minimum start time was on 1st January, 2017 at 12:13 am with the maximum start time on 30th June, 2017 at 11:52 pm. 
+All data variables were complete except for the birth year variable with a complete rate of about 91%. There were 643 unique start stations and 646 unique end stations. There were three unique user types. Also, there were three unique gender responses. The average trip duration was 900 seconds. The average birth year was 1978. The minimum start time was on 1st January, 2017 at 12:13 am with the maximum start time on 30th June, 2017 at 11:52 pm.
 
 
-```{r}
+```{r skim-ny}
 skim (ny) # Skim New York dataset
 ```
 
 
 **Washington**
 
-All data variables were complete. There were 479 unique start stations and 479 unique end stations. There were two unique user types. The average trip duration was 1237 seconds. The minimum start time was on 1st January, 2017 at 12:11 am with the maximum start time on 30th June, 2017 at 12:59 pm. The minimum end time was on 1st January, 2017 at 12:14 am with the maximum end time on 2nd July, 2017 at 4:31 am. 
+All data variables were complete. There were 479 unique start stations and 479 unique end stations. There were two unique user types. The average trip duration was 1237 seconds. The minimum start time was on 1st January, 2017 at 12:11 am with the maximum start time on 30th June, 2017 at 12:59 pm. The minimum end time was on 1st January, 2017 at 12:14 am with the maximum end time on 2nd July, 2017 at 4:31 am.
 
 
 
-```{r}
+```{r skim-wash}
 skim (wash) # Skim Washington dataset
 ```
 
@@ -131,12 +131,12 @@ skim (wash) # Skim Washington dataset
 **Chicago**
 
 
-All data variables were complete except for the birth year variable with a complete rate of about 80%. There were 568 unique start stations and 572 unique end stations. There were three unique user types. Also, there were three unique gender responses. The average trip duration was 936 seconds. The average birth year was 1981. The minimum start time was on 1st January, 2017 at 12:07 am with the maximum start time on 30th June, 2017 at 11:59 pm. The minimum end time was on 1st January, 2017 at 12:20 am with the maximum end time on 1st July, 2017 at 12:25 am. 
+All data variables were complete except for the birth year variable with a complete rate of about 80%. There were 568 unique start stations and 572 unique end stations. There were three unique user types. Also, there were three unique gender responses. The average trip duration was 936 seconds. The average birth year was 1981. The minimum start time was on 1st January, 2017 at 12:07 am with the maximum start time on 30th June, 2017 at 11:59 pm. The minimum end time was on 1st January, 2017 at 12:20 am with the maximum end time on 1st July, 2017 at 12:25 am.
 
 
 
 
-```{r}
+```{r skim-chi}
 skim (chi)  # Skim Chicago dataset
 ```
 
@@ -150,7 +150,7 @@ Which gender type has used the bikes longest in New York and Chicago?
 **New York**
 
 
-```{r}
+```{r gender-trip}
 by (ny$trip_duration, ny$gender, max) # Maximum trip duration by gender
 ```
 
@@ -158,11 +158,11 @@ by (ny$trip_duration, ny$gender, max) # Maximum trip duration by gender
 
 ```{r ny-duration}
 ggplot (ny, aes (gender, trip_duration, fill = gender)) +
-        geom_bar(stat = "identity") + 
-        labs (title = "Males use bikes for the longest duration in New York", 
+        geom_bar(stat = "identity") +
+        labs (title = "Males use bikes for the longest duration in New York",
               x = "Gender",
               y= "Trip duration (seconds)"
-             ) + 
+             ) +
         guides (fill = "none") # Plot of data
 
 ```
@@ -175,20 +175,20 @@ In New York City, males use bikes for longest duration followed by females and u
 
 **Chicago**
 
-```{r}
+```{r chi-trip_duration}
 by (chi$trip_duration, chi$gender, max) # Maximum trip duration by gender
 ```
 
 
 
-```{r}
+```{r chi-gender-plot}
 ggplot (chi, aes (gender, trip_duration, fill = gender)) +
-        geom_bar(stat = "identity") + 
-        labs (title = "Males use bikes for the longest duration in Chicago", 
+        geom_bar(stat = "identity") +
+        labs (title = "Males use bikes for the longest duration in Chicago",
               x = "Gender",
               y= "Trip duration (seconds)"
-             ) + 
-        guides (fill = "none") 
+             ) +
+        guides (fill = "none")
 ```
 
 
@@ -204,7 +204,7 @@ In which city were bikes used longest?
 
 
 
-```{r}
+```{r ny-max}
 ny %>%
         summarise (max (trip_duration)) # Maximum trip duration in New York
 ```
@@ -214,7 +214,7 @@ ny %>%
 
 
 
-```{r}
+```{r chi-max}
 chi %>%
         summarise (max (trip_duration)) # Maximum trip duration in Chicago
 
@@ -225,7 +225,7 @@ chi %>%
 
 
 
-```{r}
+```{r wash-max}
 wash %>%
         summarise (max (trip_duration)) # Maximum trip duration in Washington
 ```
@@ -257,11 +257,11 @@ by (ny$trip_duration, ny$user_type, max) # Maximum trip duration by user types
 
 ```{r user-types-plot}
 ggplot (ny, aes (user_type, trip_duration, fill = user_type)) +
-        geom_bar(stat = "identity") + 
-        labs (title = "Males use bikes for the longest duration in New York", 
+        geom_bar(stat = "identity") +
+        labs (title = "Males use bikes for the longest duration in New York",
               x = "User types",
               y= "Trip duration (seconds)"
-             ) + 
+             ) +
         guides (fill = "none") # Plot of data in New York
 ```
 
@@ -282,11 +282,11 @@ by (chi$trip_duration, chi$user_type, max) # Maximum trip duration by user types
 
 ```{r user-type-chi-plot}
 ggplot (chi, aes (user_type, trip_duration, fill = user_type)) +
-        geom_bar(stat = "identity") + 
-        labs (title = "Males use bikes for the longest duration in Chicago", 
+        geom_bar(stat = "identity") +
+        labs (title = "Males use bikes for the longest duration in Chicago",
               x = "User types",
               y= "Trip duration (seconds)"
-             ) + 
+             ) +
         guides (fill = "none") # Plot of data in Chicago
 ```
 
@@ -298,20 +298,19 @@ ggplot (chi, aes (user_type, trip_duration, fill = user_type)) +
 In Washington, customers used bikes longest than subscribers unlike the situation in New York and in Chicago.
 
 
-```{r}
+```{r user-type-wash}
 by (wash$trip_duration, wash$user_type, max) # Maximum trip duration by user types
 ```
 
 
 
 
-```{r}
+```{r user-type-wash-plot} 
 ggplot (wash, aes (user_type, trip_duration, fill = user_type)) +
-        geom_bar(stat = "identity") + 
-        labs (title = "Males use bikes for the longest duration in New York", 
+        geom_bar(stat = "identity") +
+        labs (title = "Males use bikes for the longest duration in New York",
               x = "User types",
               y= "Trip duration (seconds)"
-             ) + 
+             ) +
         guides (fill = "none") # Plot of data in Washington
 ```
-
